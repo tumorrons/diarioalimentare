@@ -1,4 +1,4 @@
-// ===== MEALS.JS - GESTIONE PASTI =====
+// ===== MEALS.JS - GESTIONE PASTI (CORRETTO) =====
 
 function addMeal() {
     const foodName = document.getElementById('foodName').value.trim();

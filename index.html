@@ -56,10 +56,10 @@
                     <input type="file" id="photoAfterInput" class="photo-inputs" accept="image/*" capture="environment">
                     
                     <div class="photo-buttons">
-                        <button class="photo-btn before" onclick="document.getElementById('photoBeforeInput').click()">
+                        <button type="button" class="photo-btn before" onclick="document.getElementById('photoBeforeInput').click()">
                             📷 Foto Prima
                         </button>
-                        <button class="photo-btn after" onclick="document.getElementById('photoAfterInput').click()">
+                        <button type="button" class="photo-btn after" onclick="document.getElementById('photoAfterInput').click()">
                             📸 Foto Dopo
                         </button>
                     </div>
@@ -74,9 +74,9 @@
                     </div>
                 </div>
 
-                <button class="add-btn" onclick="saveMeal()">➕ Aggiungi al Diario</button>
-                <button class="add-btn" id="updateBtn" onclick="updateMeal()" style="display: none; background: linear-gradient(45deg, #ffa502, #ff9500);">✏️ Aggiorna Pasto</button>
-                <button class="back-btn" id="cancelEditBtn" onclick="cancelEdit()" style="display: none;">❌ Annulla Modifica</button>
+                <button type="button" class="add-btn" onclick="saveMeal()">➕ Aggiungi al Diario</button>
+                <button type="button" class="add-btn" id="updateBtn" onclick="saveMeal()" style="display: none; background: linear-gradient(45deg, #ffa502, #ff9500);">✏️ Aggiorna Pasto</button>
+                <button type="button" class="back-btn" id="cancelEditBtn" onclick="cancelEdit()" style="display: none;">❌ Annulla Modifica</button>
             </div>
 
             <div class="diary-section">
@@ -155,7 +155,7 @@
         </div>
     </div>
 
-    <!-- JavaScript Files -->
+    <!-- JavaScript Files - ORDINE IMPORTANTE -->
     <script src="js/storage.js"></script>
     <script src="js/photos.js"></script>
     <script src="js/meals.js"></script>

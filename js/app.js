@@ -1,4 +1,4 @@
-// ===== APP.JS - LOGICA PRINCIPALE =====
+// ===== APP.JS - LOGICA PRINCIPALE (CORRETTO) =====
 
 // Variabili globali
 let meals = [];
@@ -22,6 +22,9 @@ function initApp() {
     // Configura event listeners
     setupEventListeners();
     
+    // Inizializza la navigazione
+    initNavigation();
+    
     console.log('✅ App inizializzata con successo!');
 }
 
@@ -42,6 +45,14 @@ function setupEventListeners() {
 
     // Gestione touch per mobile
     document.addEventListener('touchstart', function() {}, true);
+    
+    // Debug: aggiungi listener per il pulsante aggiungi
+    const addBtn = document.querySelector('.add-btn');
+    if (addBtn) {
+        console.log('✅ Pulsante aggiungi trovato e funzionante');
+    } else {
+        console.error('❌ Pulsante aggiungi non trovato!');
+    }
     
     console.log('🎯 Event listeners configurati');
 }
@@ -147,4 +158,11 @@ window.addEventListener('load', function() {
     console.log('📱 Pagina caricata, avvio app...');
     initApp();
 });
-    
+
+// Debug: aggiungi funzione per testare il pulsante
+function testAddMeal() {
+    console.log('🧪 Test funzione addMeal');
+    console.log('selectedMealType:', selectedMealType);
+    console.log('currentDate:', currentDate);
+    console.log('meals array:', meals);
+}

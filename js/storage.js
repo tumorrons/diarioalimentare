@@ -1,4 +1,4 @@
-// ===== STORAGE.JS - GESTIONE LOCALSTORAGE =====
+// ===== STORAGE.JS - GESTIONE LOCALSTORAGE (CORRETTO) =====
 
 const STORAGE_KEY = 'foodDiaryMeals';
 const SETTINGS_KEY = 'foodDiarySettings';
@@ -26,7 +26,9 @@ function saveMeals() {
         if (e.name === 'QuotaExceededError') {
             handleStorageQuotaExceeded();
         } else {
-            showNotification('❌ Errore nel salvare i dati', 'error');
+            if (typeof showNotification === 'function') {
+                showNotification('❌ Errore nel salvare i dati', 'error');
+            }
         }
         
         return false;
@@ -71,9 +73,13 @@ function loadMeals() {
         
         // Prova a recuperare un backup
         if (attemptDataRecovery()) {
-            showNotification('⚠️ Dati recuperati da backup locale', 'info');
+            if (typeof showNotification === 'function') {
+                showNotification('⚠️ Dati recuperati da backup locale', 'info');
+            }
         } else {
-            showNotification('⚠️ Errore nel caricare i dati. Diario resettato.', 'error');
+            if (typeof showNotification === 'function') {
+                showNotification('⚠️ Errore nel caricare i dati. Diario resettato.', 'error');
+            }
         }
     }
 }
@@ -118,7 +124,9 @@ function handleStorageQuotaExceeded() {
     if (choice) {
         compressAllPhotos();
     } else {
-        showNotification('💾 Fai un backup dei dati dalla sezione Backup', 'info');
+        if (typeof showNotification === 'function') {
+            showNotification('💾 Fai un backup dei dati dalla sezione Backup', 'info');
+        }
     }
 }
 
@@ -153,13 +161,17 @@ function compressAllPhotos() {
             console.log(`✅ Compressione completata: ${compressedPhotos} foto`);
             
             if (saveMeals()) {
-                showNotification(`✅ ${compressedPhotos} foto compresse con successo`, 'success');
+                if (typeof showNotification === 'function') {
+                    showNotification(`✅ ${compressedPhotos} foto compresse con successo`, 'success');
+                }
             }
         }
     }
     
     if (totalPhotos === 0) {
-        showNotification('ℹ️ Nessuna foto da comprimere', 'info');
+        if (typeof showNotification === 'function') {
+            showNotification('ℹ️ Nessuna foto da comprimere', 'info');
+        }
     }
 }
 
@@ -281,11 +293,13 @@ function saveWithAutoBackup() {
         localStorage.setItem(STORAGE_KEY + '_last_backup', today);
     }
     
-    return saveMeals();
+    return originalSaveMeals();
 }
 
-// Sostituisci la funzione saveMeals originale
+// Mantieni la funzione originale
 const originalSaveMeals = saveMeals;
+
+// Sostituisci la funzione saveMeals con quella che include il backup automatico
 saveMeals = function() {
     return saveWithAutoBackup();
 };
