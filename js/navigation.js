@@ -1,4 +1,4 @@
-// ===== NAVIGATION.JS - GESTIONE NAVIGAZIONE =====
+// ===== NAVIGATION.JS - GESTIONE NAVIGAZIONE (CORRETTO) =====
 
 // Stati delle viste
 const VIEWS = {

@@ -160,7 +160,7 @@ function compressAllPhotos() {
         if (compressedPhotos === totalPhotos) {
             console.log(`✅ Compressione completata: ${compressedPhotos} foto`);
             
-            if (saveMeals()) {
+            if (saveMealsInternal()) {
                 if (typeof showNotification === 'function') {
                     showNotification(`✅ ${compressedPhotos} foto compresse con successo`, 'success');
                 }
@@ -283,6 +283,25 @@ function cleanOldBackups() {
     }
 }
 
+// Funzione interna per salvare senza backup automatico
+function saveMealsInternal() {
+    try {
+        const dataToSave = {
+            meals: meals,
+            lastSaved: new Date().toISOString(),
+            version: '2.0'
+        };
+        
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+        console.log(`💾 Dati salvati internamente: ${meals.length} pasti`);
+        
+        return true;
+    } catch (e) {
+        console.error('❌ Errore nel salvare i dati internamente:', e);
+        return false;
+    }
+}
+
 // Crea backup automatico ogni volta che si salvano i dati (una volta al giorno)
 function saveWithAutoBackup() {
     const today = new Date().toISOString().slice(0, 10);
@@ -293,10 +312,10 @@ function saveWithAutoBackup() {
         localStorage.setItem(STORAGE_KEY + '_last_backup', today);
     }
     
-    return originalSaveMeals();
+    return saveMealsInternal();
 }
 
-// Mantieni la funzione originale
+// Mantieni la funzione originale come backup
 const originalSaveMeals = saveMeals;
 
 // Sostituisci la funzione saveMeals con quella che include il backup automatico
