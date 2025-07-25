@@ -1,4 +1,4 @@
-// ===== PHOTOS.JS - GESTIONE FOTO =====
+// ===== PHOTOS.JS - GESTIONE FOTO (MOBILE FIX) =====
 
 let currentPhotoBefore = null;
 let currentPhotoAfter = null;
@@ -13,16 +13,49 @@ const PHOTO_CONFIG = {
 
 function setupPhotoHandlers() {
     // Gestione foto prima
-    document.getElementById('photoBeforeInput').addEventListener('change', function(e) {
-        handlePhotoInput(e, 'before');
-    });
+    const photoBeforeInput = document.getElementById('photoBeforeInput');
+    const photoAfterInput = document.getElementById('photoAfterInput');
+    
+    if (photoBeforeInput) {
+        photoBeforeInput.addEventListener('change', function(e) {
+            handlePhotoInput(e, 'before');
+        });
+    }
 
-    // Gestione foto dopo
-    document.getElementById('photoAfterInput').addEventListener('change', function(e) {
-        handlePhotoInput(e, 'after');
-    });
+    if (photoAfterInput) {
+        photoAfterInput.addEventListener('change', function(e) {
+            handlePhotoInput(e, 'after');
+        });
+    }
     
     console.log('📸 Photo handlers configurati');
+}
+
+// Fix per mobile: funzione dedicata per attivare input foto
+function triggerPhotoInput(type) {
+    const inputId = type === 'before' ? 'photoBeforeInput' : 'photoAfterInput';
+    const input = document.getElementById(inputId);
+    
+    if (input) {
+        // Per mobile: crea un evento touch/click simulato
+        input.style.display = 'block';
+        input.style.position = 'absolute';
+        input.style.left = '-9999px';
+        input.style.opacity = '0';
+        
+        // Focus e click per compatibilità mobile
+        input.focus();
+        input.click();
+        
+        // Torna invisibile dopo il click
+        setTimeout(() => {
+            input.style.display = 'none';
+        }, 100);
+        
+        console.log(`📱 Trigger foto ${type} per mobile`);
+    } else {
+        console.error(`❌ Input foto ${type} non trovato`);
+    }
 }
 
 function handlePhotoInput(event, type) {
@@ -137,23 +170,33 @@ function updatePhotoPreview(previewId, photoData, label) {
         
         // Stile per il pulsante rimuovi
         const removeBtn = preview.querySelector('.remove-photo-btn');
-        removeBtn.style.cssText = `
-            position: absolute; top: 5px; right: 5px; 
-            background: rgba(255, 71, 87, 0.8); color: white; 
-            border: none; border-radius: 50%; width: 25px; height: 25px; 
-            cursor: pointer; font-size: 12px; display: none;
-        `;
+        if (removeBtn) {
+            removeBtn.style.cssText = `
+                position: absolute; top: 5px; right: 5px; 
+                background: rgba(255, 71, 87, 0.8); color: white; 
+                border: none; border-radius: 50%; width: 25px; height: 25px; 
+                cursor: pointer; font-size: 12px; display: none;
+            `;
+        }
         
-        // Mostra il pulsante al hover
+        // Mostra il pulsante al hover (desktop) o touch (mobile)
         preview.style.position = 'relative';
-        preview.onmouseenter = () => removeBtn.style.display = 'block';
-        preview.onmouseleave = () => removeBtn.style.display = 'none';
+        preview.onmouseenter = () => {
+            if (removeBtn) removeBtn.style.display = 'block';
+        };
+        preview.onmouseleave = () => {
+            if (removeBtn) removeBtn.style.display = 'none';
+        };
+        preview.ontouchstart = () => {
+            if (removeBtn) removeBtn.style.display = 'block';
+        };
         
     } else {
         preview.innerHTML = `<div class="photo-preview-label">${label}</div>`;
         preview.style.position = 'static';
         preview.onmouseenter = null;
         preview.onmouseleave = null;
+        preview.ontouchstart = null;
     }
 }
 
@@ -161,16 +204,19 @@ function showPhotoLoading(type) {
     const previewId = type === 'before' ? 'photoBeforePreview' : 'photoAfterPreview';
     const label = type === 'before' ? 'Prima di mangiare' : 'Dopo aver mangiato';
     
-    document.getElementById(previewId).innerHTML = `
-        <div class="photo-loading">
-            <div class="spinner" style="
-                border: 3px solid #f3f3f3; border-top: 3px solid #667eea; 
-                border-radius: 50%; width: 30px; height: 30px; 
-                animation: spin 1s linear infinite; margin: 0 auto 10px;
-            "></div>
-            <div class="photo-preview-label">Elaborazione ${label.toLowerCase()}...</div>
-        </div>
-    `;
+    const preview = document.getElementById(previewId);
+    if (preview) {
+        preview.innerHTML = `
+            <div class="photo-loading">
+                <div class="spinner" style="
+                    border: 3px solid #f3f3f3; border-top: 3px solid #667eea; 
+                    border-radius: 50%; width: 30px; height: 30px; 
+                    animation: spin 1s linear infinite; margin: 0 auto 10px;
+                "></div>
+                <div class="photo-preview-label">Elaborazione ${label.toLowerCase()}...</div>
+            </div>
+        `;
+    }
     
     // Aggiungi animazione spinner se non esiste
     if (!document.querySelector('style[data-spinner]')) {
@@ -190,12 +236,14 @@ function removePhoto(type) {
     if (type === 'before') {
         currentPhotoBefore = null;
         updatePhotoPreview('photoBeforePreview', null, 'Prima di mangiare');
-        document.getElementById('photoBeforeInput').value = '';
+        const input = document.getElementById('photoBeforeInput');
+        if (input) input.value = '';
         console.log('🗑️ Foto prima rimossa');
     } else {
         currentPhotoAfter = null;
         updatePhotoPreview('photoAfterPreview', null, 'Dopo aver mangiato');
-        document.getElementById('photoAfterInput').value = '';
+        const input = document.getElementById('photoAfterInput');
+        if (input) input.value = '';
         console.log('🗑️ Foto dopo rimossa');
     }
 }
@@ -215,7 +263,7 @@ function getCurrentPhotoAfter() {
     return currentPhotoAfter;
 }
 
-function setCurrentPhotoBefore(photo) {
+function setCurrentPhoteBefore(photo) {
     currentPhotoBefore = photo;
 }
 

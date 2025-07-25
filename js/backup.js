@@ -1,30 +1,194 @@
-// ===== BACKUP.JS - GESTIONE BACKUP =====
+// ===== BACKUP.JS - GESTIONE BACKUP (MOBILE FIX) =====
 
 function downloadBackup() {
     console.log('📥 Avvio download backup...');
     
     const backupData = createBackupData();
     const dataStr = JSON.stringify(backupData, null, 2);
-    const dataBlob = new Blob([dataStr], {type: 'application/json'});
     
     // Calcola dimensioni
-    const sizeInMB = (dataBlob.size / 1024 / 1024).toFixed(2);
+    const sizeInMB = (dataStr.length / 1024 / 1024).toFixed(2);
     console.log(`📊 Dimensione backup: ${sizeInMB} MB`);
     
     const fileName = generateBackupFileName();
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(dataBlob);
-    link.download = fileName;
     
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    console.log(`✅ Backup scaricato: ${fileName}`);
-    showNotification(`✅ Backup scaricato (${sizeInMB} MB)`, 'success');
+    // Fix per mobile: usa un approccio più compatibile
+    try {
+        // Metodo 1: Blob + URL (preferito)
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        
+        if (navigator.share && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+            // Per dispositivi mobile con Web Share API
+            const file = new File([dataBlob], fileName, { type: 'application/json' });
+            navigator.share({
+                files: [file],
+                title: 'Backup Diario Alimentare',
+                text: 'Backup dei tuoi dati del diario alimentare'
+            }).then(() => {
+                console.log('✅ Backup condiviso tramite Web Share API');
+                showNotification(`✅ Backup condiviso (${sizeInMB} MB)`, 'success');
+            }).catch((error) => {
+                console.log('⚠️ Web Share non disponibile, uso download tradizionale');
+                fallbackDownload(dataBlob, fileName, sizeInMB);
+            });
+        } else {
+            // Download tradizionale
+            fallbackDownload(dataBlob, fileName, sizeInMB);
+        }
+    } catch (error) {
+        console.error('❌ Errore nel download:', error);
+        
+        // Metodo 2: Data URI (fallback per browser molto vecchi)
+        try {
+            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+            const link = document.createElement('a');
+            link.href = dataUri;
+            link.download = fileName;
+            link.style.display = 'none';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            console.log(`✅ Backup scaricato con data URI: ${fileName}`);
+            showNotification(`✅ Backup scaricato (${sizeInMB} MB)`, 'success');
+        } catch (dataUriError) {
+            console.error('❌ Anche data URI fallito:', dataUriError);
+            showBackupText(dataStr, fileName);
+        }
+    }
     
     // Salva informazioni ultimo backup
     saveLastBackupInfo(fileName, sizeInMB);
+}
+
+function fallbackDownload(dataBlob, fileName, sizeInMB) {
+    try {
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(dataBlob);
+        
+        link.href = url;
+        link.download = fileName;
+        link.style.display = 'none';
+        
+        // Per mobile: aggiungi attributi extra
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener');
+        
+        document.body.appendChild(link);
+        
+        // Simula click con eventi multipli per compatibilità mobile
+        const clickEvent = new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true
+        });
+        
+        link.dispatchEvent(clickEvent);
+        
+        // Cleanup
+        setTimeout(() => {
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }, 100);
+        
+        console.log(`✅ Backup scaricato: ${fileName}`);
+        showNotification(`✅ Backup scaricato (${sizeInMB} MB)`, 'success');
+        
+    } catch (error) {
+        console.error('❌ Fallback download fallito:', error);
+        showBackupText(dataBlob, fileName);
+    }
+}
+
+function showBackupText(dataStr, fileName) {
+    // Ultima risorsa: mostra il testo in un modal per copia manuale
+    const modal = document.createElement('div');
+    modal.innerHTML = `
+        <div class="backup-text-modal">
+            <div class="modal-header">
+                <h3>📄 Backup Manuale</h3>
+                <button onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Il download automatico non è supportato. Copia il testo qui sotto e salvalo in un file chiamato <strong>${fileName}</strong>:</p>
+                <textarea readonly style="width: 100%; height: 200px; font-family: monospace; font-size: 10px;">${dataStr}</textarea>
+                <button onclick="copyBackupText(this)" style="margin-top: 10px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px;">
+                    📋 Copia Testo
+                </button>
+            </div>
+        </div>
+    `;
+    
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.8); display: flex; align-items: center; 
+        justify-content: center; z-index: 2000; padding: 20px;
+    `;
+    
+    modal.querySelector('.backup-text-modal').style.cssText = `
+        background: white; border-radius: 15px; max-width: 500px; 
+        width: 100%; max-height: 80vh; overflow-y: auto;
+    `;
+    
+    document.body.appendChild(modal);
+    showNotification('📄 Usa il backup manuale', 'info');
+}
+
+function copyBackupText(button) {
+    const textarea = button.parentElement.querySelector('textarea');
+    textarea.select();
+    textarea.setSelectionRange(0, 99999); // Per mobile
+    
+    try {
+        document.execCommand('copy');
+        button.textContent = '✅ Copiato!';
+        setTimeout(() => {
+            button.textContent = '📋 Copia Testo';
+        }, 2000);
+    } catch (error) {
+        console.error('❌ Errore nella copia:', error);
+        alert('Seleziona tutto il testo e copialo manualmente (Ctrl+A, Ctrl+C)');
+    }
+}
+
+// Fix per mobile: funzione dedicata per attivare input file
+function triggerBackupInput() {
+    const input = document.getElementById('backupFileInput');
+    
+    if (input) {
+        // Per mobile: assicurati che l'input sia visibile e cliccabile
+        input.style.display = 'block';
+        input.style.position = 'absolute';
+        input.style.left = '-9999px';
+        input.style.opacity = '0';
+        input.style.pointerEvents = 'auto';
+        
+        // Focus e click per compatibilità mobile
+        input.focus();
+        
+        // Simula click con eventi multipli
+        const clickEvent = new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true
+        });
+        input.dispatchEvent(clickEvent);
+        
+        // Per iOS Safari
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            input.click();
+        }
+        
+        // Torna invisibile dopo il click
+        setTimeout(() => {
+            input.style.display = 'none';
+        }, 100);
+        
+        console.log('📱 Trigger backup input per mobile');
+    } else {
+        console.error('❌ Input backup non trovato');
+    }
 }
 
 function createBackupData() {
@@ -191,6 +355,7 @@ function getDateRangeFromMeals(mealsData) {
     };
 }
 
+// Funzioni backup preview (mantengo le stesse dell'originale)
 function showBackupPreview(backupData, validation) {
     const modal = document.createElement('div');
     modal.className = 'backup-preview-modal';
@@ -244,6 +409,12 @@ function showBackupPreview(backupData, validation) {
                 </div>
                 
                 <div class="restore-options">
+                    <label class="restore-option">
+                        <input type="radio" name="restoreMode" value="replace" checked>
+                        <span>🔄 Sostituisci tutti i dati</span>
+                        <small>Elimina tutti i dati attuali e li sostituisce con quelli del backup</small>
+                    </label>
+                    
                     <label class="restore-option">
                         <input type="radio" name="restoreMode" value="merge">
                         <span>➕ Aggiungi ai dati esistenti</span>
@@ -382,7 +553,7 @@ function addBackupModalStyles() {
         }
         
         .restore-options {
-            space-y: 10px;
+            margin-bottom: 20px;
         }
         
         .restore-option {
@@ -453,6 +624,17 @@ function addBackupModalStyles() {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
+        
+        @media (max-width: 480px) {
+            .backup-preview-footer {
+                flex-direction: column;
+            }
+            
+            .backup-preview-footer button {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        }
     `;
     
     document.head.appendChild(style);
@@ -465,7 +647,9 @@ function downloadCurrentBeforeRestore() {
 
 function executeRestore() {
     const modal = document.querySelector('.backup-preview-modal');
-    const restoreMode = modal.querySelector('input[name="restoreMode"]:checked').value;
+    if (!modal) return;
+    
+    const restoreMode = modal.querySelector('input[name="restoreMode"]:checked')?.value || 'replace';
     const backupData = modal.backupData;
     
     console.log(`🔄 Esecuzione ripristino con modalità: ${restoreMode}`);
@@ -594,7 +778,11 @@ function saveLastBackupInfo(fileName, sizeMB) {
         mealsCount: meals.length
     };
     
-    localStorage.setItem('lastBackupInfo', JSON.stringify(backupInfo));
+    try {
+        localStorage.setItem('lastBackupInfo', JSON.stringify(backupInfo));
+    } catch (error) {
+        console.warn('⚠️ Impossibile salvare info ultimo backup:', error);
+    }
 }
 
 function getLastBackupInfo() {
@@ -605,104 +793,3 @@ function getLastBackupInfo() {
         return null;
     }
 }
-
-// Funzioni di utilità per backup automatico
-function shouldCreateAutoBackup() {
-    const lastBackup = getLastBackupInfo();
-    if (!lastBackup) return true;
-    
-    const lastBackupDate = new Date(lastBackup.date);
-    const daysSinceBackup = (new Date() - lastBackupDate) / (1000 * 60 * 60 * 24);
-    
-    return daysSinceBackup >= 7; // Backup automatico ogni 7 giorni
-}
-
-function createAutoBackupIfNeeded() {
-    if (meals.length > 0 && shouldCreateAutoBackup()) {
-        console.log('🤖 Creazione backup automatico...');
-        
-        const notification = document.createElement('div');
-        notification.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span>💾 Vuoi scaricare un backup automatico dei tuoi dati?</span>
-                <button onclick="downloadBackup(); this.parentElement.parentElement.remove();" 
-                        style="background: #27ae60; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
-                    Sì
-                </button>
-                <button onclick="this.parentElement.parentElement.remove();" 
-                        style="background: #6c757d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
-                    No
-                </button>
-            </div>
-        `;
-        
-        notification.style.cssText = `
-            position: fixed; top: 20px; right: 20px; 
-            background: white; padding: 15px; border-radius: 10px; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 1000;
-            max-width: 300px; border-left: 4px solid #27ae60;
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // Rimuovi automaticamente dopo 10 secondi
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
-            }
-        }, 10000);
-    }
-}
-
-// Backup differenziale (solo cambiamenti)
-function createDifferentialBackup() {
-    const lastBackup = getLastBackupInfo();
-    if (!lastBackup) {
-        return downloadBackup(); // Backup completo se è il primo
-    }
-    
-    const lastBackupDate = new Date(lastBackup.date);
-    const changedMeals = meals.filter(meal => {
-        // Considera cambiati i pasti creati/modificati dopo l'ultimo backup
-        // Nota: questo richiede un campo lastModified nei pasti
-        return meal.lastModified && new Date(meal.lastModified) > lastBackupDate;
-    });
-    
-    if (changedMeals.length === 0) {
-        showNotification('ℹ️ Nessun cambiamento dal ultimo backup', 'info');
-        return;
-    }
-    
-    const diffBackup = {
-        version: '2.0',
-        type: 'differential',
-        basedOn: lastBackup.fileName,
-        exportDate: new Date().toISOString(),
-        changes: changedMeals,
-        stats: {
-            changedMeals: changedMeals.length,
-            baseMeals: lastBackup.mealsCount
-        }
-    };
-    
-    const dataStr = JSON.stringify(diffBackup, null, 2);
-    const dataBlob = new Blob([dataStr], {type: 'application/json'});
-    
-    const fileName = `diario-diff-${new Date().toISOString().slice(0, 10)}.json`;
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(dataBlob);
-    link.download = fileName;
-    
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    console.log(`✅ Backup differenziale creato: ${changedMeals.length} cambiamenti`);
-    showNotification(`✅ Backup differenziale: ${changedMeals.length} cambiamenti`, 'success');
-}="replace" checked>
-                        <span>🔄 Sostituisci tutti i dati</span>
-                        <small>Elimina tutti i dati attuali e li sostituisce con quelli del backup</small>
-                    </label>
-                    
-                    <label class="restore-option">
-                        <input type="radio" name="restoreMode" value

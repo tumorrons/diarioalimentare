@@ -52,14 +52,15 @@
                 </div>
 
                 <div class="photo-section">
-                    <input type="file" id="photoBeforeInput" class="photo-inputs" accept="image/*" capture="environment">
-                    <input type="file" id="photoAfterInput" class="photo-inputs" accept="image/*" capture="environment">
+                    <!-- Input file nascosti -->
+                    <input type="file" id="photoBeforeInput" class="photo-inputs" accept="image/*" capture="environment" style="display: none;">
+                    <input type="file" id="photoAfterInput" class="photo-inputs" accept="image/*" capture="environment" style="display: none;">
                     
                     <div class="photo-buttons">
-                        <button type="button" class="photo-btn before" onclick="document.getElementById('photoBeforeInput').click()">
+                        <button type="button" class="photo-btn before" onclick="triggerPhotoInput('before')">
                             📷 Foto Prima
                         </button>
-                        <button type="button" class="photo-btn after" onclick="document.getElementById('photoAfterInput').click()">
+                        <button type="button" class="photo-btn after" onclick="triggerPhotoInput('after')">
                             📸 Foto Dopo
                         </button>
                     </div>
@@ -123,18 +124,24 @@
                 <button class="backup-action-btn download-btn" onclick="downloadBackup()">
                     📥 Scarica Backup JSON
                 </button>
-                <button class="backup-action-btn upload-btn" onclick="document.getElementById('backupFileInput').click()">
+                <button class="backup-action-btn upload-btn" onclick="triggerBackupInput()">
                     📤 Carica Backup JSON
                 </button>
             </div>
             
-            <input type="file" id="backupFileInput" class="file-input" accept=".json" onchange="uploadBackup(event)">
+            <!-- Input file nascosto -->
+            <input type="file" id="backupFileInput" class="file-input" accept=".json" onchange="uploadBackup(event)" style="display: none;">
             
             <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; font-size: 14px; color: #666;">
                 <strong>💡 Come funziona:</strong><br>
                 • <strong>Scarica:</strong> Crea un file JSON con tutti i tuoi dati<br>
                 • <strong>Carica:</strong> Ripristina i dati da un file di backup<br>
-                • I backup includono tutte le foto e i dati dei pasti
+                • I backup includono tutte le foto e i dati dei pasti<br><br>
+                
+                <strong>🔧 Problemi su mobile?</strong><br>
+                • <strong>Download:</strong> Tocca "Scarica", poi "Condividi" o salva nel download<br>
+                • <strong>Upload:</strong> Tocca "Carica", seleziona il file dalla galleria/download<br>
+                • Se non funziona, prova da browser desktop
             </div>
         </div>
 
