@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Mio Diario Alimentare</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/mobile.css">
+    <link rel="stylesheet" href="css/print.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ Il Mio Diario Alimentare</h1>
+            <p>Registra i tuoi pasti con foto e note</p>
+        </div>
+
+        <!-- Vista principale -->
+        <div id="mainView">
+            <div class="navigation">
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="changeDay(-1)">⬅️ Ieri</button>
+                    <button class="nav-btn active" onclick="changeDay(0)">📅 Oggi</button>
+                    <button class="nav-btn" onclick="changeDay(1)">Domani ➡️</button>
+                </div>
+                <div class="utility-buttons">
+                    <button class="archive-btn" onclick="showArchive()">📚 Archivio</button>
+                    <button class="backup-btn" onclick="showBackup()">💾 Backup</button>
+                    <button class="print-btn" onclick="showPrint()">🖨️ Stampa</button>
+                </div>
+                <div class="current-date" id="currentDate"></div>
+            </div>
+
+            <div class="add-meal-section" id="addMealSection">
+                <div class="meal-type-selector">
+                    <button class="meal-type-btn active" data-type="colazione">🌅 Colazione</button>
+                    <button class="meal-type-btn" data-type="pranzo">☀️ Pranzo</button>
+                    <button class="meal-type-btn" data-type="cena">🌙 Cena</button>
+                    <button class="meal-type-btn" data-type="snack">🍎 Snack</button>
+                </div>
+
+                <div class="food-input-group">
+                    <label for="foodName">Cosa hai mangiato?</label>
+                    <input type="text" id="foodName" placeholder="Es: Pasta al pomodoro, Insalata mista...">
+                </div>
+
+                <div class="food-input-group">
+                    <label for="foodNotes">Note (opzionale)</label>
+                    <textarea id="foodNotes" rows="3" placeholder="Aggiungi dettagli, ingredienti, sensazioni..."></textarea>
+                </div>
+
+                <div class="photo-section">
+                    <input type="file" id="photoBeforeInput" class="photo-inputs" accept="image/*" capture="environment">
+                    <input type="file" id="photoAfterInput" class="photo-inputs" accept="image/*" capture="environment">
+                    
+                    <div class="photo-buttons">
+                        <button class="photo-btn before" onclick="document.getElementById('photoBeforeInput').click()">
+                            📷 Foto Prima
+                        </button>
+                        <button class="photo-btn after" onclick="document.getElementById('photoAfterInput').click()">
+                            📸 Foto Dopo
+                        </button>
+                    </div>
+                    
+                    <div class="photo-previews">
+                        <div class="photo-preview" id="photoBeforePreview">
+                            <div class="photo-preview-label">Prima di mangiare</div>
+                        </div>
+                        <div class="photo-preview" id="photoAfterPreview">
+                            <div class="photo-preview-label">Dopo aver mangiato</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="add-btn" onclick="saveMeal()">➕ Aggiungi al Diario</button>
+                <button class="add-btn" id="updateBtn" onclick="updateMeal()" style="display: none; background: linear-gradient(45deg, #ffa502, #ff9500);">✏️ Aggiorna Pasto</button>
+                <button class="back-btn" id="cancelEditBtn" onclick="cancelEdit()" style="display: none;">❌ Annulla Modifica</button>
+            </div>
+
+            <div class="diary-section">
+                <h2 id="diaryTitle">📖 Il Tuo Diario di Oggi</h2>
+                <div id="mealsList">
+                    <div class="empty-state">
+                        <div style="font-size: 48px; margin-bottom: 15px;">🍽️</div>
+                        <p>Nessun pasto registrato per questo giorno.<br>Inizia aggiungendo il tuo primo pasto!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vista archivio -->
+        <div id="archiveView" class="archive-view">
+            <div class="archive-list">
+                <button class="back-btn" onclick="showMain()">⬅️ Torna al Diario</button>
+                <h2>📚 Archivio Completo</h2>
+                <div id="archiveList">
+                    <div class="empty-state">
+                        <div style="font-size: 48px; margin-bottom: 15px;">📅</div>
+                        <p>Nessun dato nell'archivio.<br>Inizia registrando i tuoi pasti!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vista dettaglio giorno -->
+        <div id="dayDetailView" class="day-detail-view">
+            <div class="diary-section">
+                <button class="back-btn" onclick="showArchive()">⬅️ Torna all'Archivio</button>
+                <h2 id="dayDetailTitle">📖 Dettaglio Giorno</h2>
+                <div id="dayDetailMeals"></div>
+            </div>
+        </div>
+
+        <!-- Vista backup -->
+        <div id="backupView" class="backup-section">
+            <button class="back-btn" onclick="showMain()">⬅️ Torna al Diario</button>
+            <h2>💾 Gestione Backup</h2>
+            <p style="margin-bottom: 20px; color: #666;">Salva o ripristina tutti i tuoi dati del diario alimentare.</p>
+            
+            <div class="backup-buttons">
+                <button class="backup-action-btn download-btn" onclick="downloadBackup()">
+                    📥 Scarica Backup JSON
+                </button>
+                <button class="backup-action-btn upload-btn" onclick="document.getElementById('backupFileInput').click()">
+                    📤 Carica Backup JSON
+                </button>
+            </div>
+            
+            <input type="file" id="backupFileInput" class="file-input" accept=".json" onchange="uploadBackup(event)">
+            
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; font-size: 14px; color: #666;">
+                <strong>💡 Come funziona:</strong><br>
+                • <strong>Scarica:</strong> Crea un file JSON con tutti i tuoi dati<br>
+                • <strong>Carica:</strong> Ripristina i dati da un file di backup<br>
+                • I backup includono tutte le foto e i dati dei pasti
+            </div>
+        </div>
+
+        <!-- Vista stampa -->
+        <div id="printView" class="print-view">
+            <div class="print-controls">
+                <button class="back-btn" onclick="showMain()">⬅️ Torna al Diario</button>
+                <h2>🖨️ Stampa Mensile</h2>
+                <p style="margin-bottom: 20px; color: #666;">Genera un report stampabile per un mese specifico.</p>
+                
+                <div class="month-selector">
+                    <input type="month" id="printMonth" class="month-input" onchange="generatePrintPreview()">
+                    <button class="backup-action-btn download-btn" onclick="printMonth()">🖨️ Stampa</button>
+                </div>
+            </div>
+            
+            <div id="printContent" class="print-content"></div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/storage.js"></script>
+    <script src="js/photos.js"></script>
+    <script src="js/meals.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/archive.js"></script>
+    <script src="js/backup.js"></script>
+    <script src="js/print.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

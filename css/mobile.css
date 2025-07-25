@@ -1,0 +1,546 @@
+/* ===== MOBILE.CSS - STILI RESPONSIVE ===== */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .container {
+        max-width: 600px;
+        padding: 25px;
+    }
+    
+    .header h1 {
+        font-size: 32px;
+    }
+    
+    .nav-buttons {
+        flex-wrap: wrap;
+    }
+    
+    .utility-buttons {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Mobile Large (481px - 768px) */
+@media (max-width: 768px) and (min-width: 481px) {
+    .container {
+        max-width: 100%;
+        padding: 20px;
+    }
+    
+    .header h1 {
+        font-size: 26px;
+    }
+    
+    .nav-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .utility-buttons {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    
+    .meal-type-selector {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    
+    .photo-buttons {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .photo-previews {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .meal-photos {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}
+
+/* Mobile Small (320px - 480px) */
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+        margin: 0;
+    }
+    
+    .header {
+        margin-bottom: 20px;
+    }
+    
+    .header h1 {
+        font-size: 22px;
+        margin-bottom: 8px;
+    }
+    
+    .header p {
+        font-size: 14px;
+    }
+    
+    /* Navigazione */
+    .navigation {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .nav-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .nav-btn {
+        padding: 10px;
+        font-size: 13px;
+    }
+    
+    .utility-buttons {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .archive-btn, .backup-btn, .print-btn {
+        padding: 10px;
+        font-size: 13px;
+    }
+    
+    .current-date {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    
+    /* Sezione aggiungi pasto */
+    .add-meal-section {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .meal-type-selector {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .meal-type-btn {
+        padding: 10px;
+        font-size: 13px;
+    }
+    
+    .food-input-group {
+        margin-bottom: 15px;
+    }
+    
+    .food-input-group label {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+    
+    .food-input-group input, 
+    .food-input-group textarea {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    /* Foto */
+    .photo-section {
+        margin-bottom: 15px;
+    }
+    
+    .photo-buttons {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .photo-btn {
+        padding: 12px;
+        font-size: 13px;
+    }
+    
+    .photo-previews {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .photo-preview img {
+        max-height: 100px;
+    }
+    
+    /* Pulsanti */
+    .add-btn {
+        padding: 12px;
+        font-size: 16px;
+    }
+    
+    .back-btn {
+        padding: 10px;
+        font-size: 13px;
+    }
+    
+    /* Sezione diario */
+    .diary-section {
+        padding: 20px;
+    }
+    
+    .diary-section h2 {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+    
+    .meal-entry {
+        padding: 15px;
+        margin-bottom: 12px;
+    }
+    
+    .meal-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .meal-actions {
+        align-self: flex-end;
+        gap: 3px;
+    }
+    
+    .meal-type-badge {
+        font-size: 11px;
+        padding: 4px 10px;
+    }
+    
+    .meal-time {
+        font-size: 13px;
+    }
+    
+    .meal-food {
+        font-size: 15px;
+        margin-bottom: 3px;
+    }
+    
+    .meal-notes {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+    
+    .meal-photos {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .meal-photo {
+        max-height: 80px;
+    }
+    
+    .edit-btn, .delete-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+    
+    /* Stato vuoto */
+    .empty-state {
+        padding: 30px 15px;
+    }
+    
+    .empty-state p {
+        font-size: 14px;
+    }
+    
+    /* Archivio */
+    .archive-list {
+        padding: 20px;
+    }
+    
+    .archive-day {
+        padding: 15px;
+        margin-bottom: 12px;
+    }
+    
+    .archive-day-header {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+    
+    .archive-date {
+        font-size: 15px;
+    }
+    
+    .archive-badges {
+        flex-direction: row;
+        align-items: center;
+        align-self: flex-end;
+    }
+    
+    .meal-count {
+        font-size: 11px;
+        padding: 3px 8px;
+    }
+    
+    .photo-count {
+        font-size: 9px;
+        padding: 2px 6px;
+    }
+    
+    .archive-preview {
+        font-size: 13px;
+    }
+    
+    /* Backup */
+    .backup-section {
+        padding: 20px;
+    }
+    
+    .backup-buttons {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .backup-action-btn {
+        padding: 12px;
+        font-size: 13px;
+    }
+    
+    /* Stampa */
+    .print-controls {
+        padding: 20px;
+    }
+    
+    .month-selector {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+    }
+    
+    .month-input {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+/* Mobile Extra Small (< 320px) */
+@media (max-width: 319px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .header h1 {
+        font-size: 20px;
+    }
+    
+    .header p {
+        font-size: 12px;
+    }
+    
+    .navigation {
+        padding: 12px;
+    }
+    
+    .nav-btn {
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    .add-meal-section {
+        padding: 15px;
+    }
+    
+    .diary-section {
+        padding: 15px;
+    }
+    
+    .meal-entry {
+        padding: 12px;
+    }
+    
+    .meal-type-badge {
+        font-size: 10px;
+        padding: 3px 8px;
+    }
+    
+    .meal-food {
+        font-size: 14px;
+    }
+    
+    .meal-notes {
+        font-size: 12px;
+    }
+}
+
+/* Orientamento landscape su mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .container {
+        padding: 10px 20px;
+    }
+    
+    .header {
+        margin-bottom: 15px;
+    }
+    
+    .header h1 {
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+    
+    .navigation {
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .nav-buttons {
+        flex-direction: row;
+    }
+    
+    .utility-buttons {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .add-meal-section {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .meal-type-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .photo-buttons {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .photo-previews {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .diary-section {
+        padding: 15px;
+    }
+    
+    .meal-entry {
+        padding: 12px;
+    }
+    
+    .meal-header {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+/* Touch enhancements */
+@media (pointer: coarse) {
+    /* Aumenta le aree di tocco su dispositivi touch */
+    .nav-btn, .meal-type-btn, .photo-btn, .add-btn, .back-btn {
+        min-height: 44px; /* Standard Apple touch target */
+    }
+    
+    .edit-btn, .delete-btn {
+        min-height: 36px;
+        min-width: 36px;
+    }
+    
+    .archive-day {
+        min-height: 60px;
+    }
+    
+    /* Feedback tattile */
+    .nav-btn:active, .meal-type-btn:active, .photo-btn:active {
+        transform: scale(0.95);
+    }
+    
+    .add-btn:active {
+        transform: scale(0.98);
+    }
+    
+    /* Migliora la visibilità degli stati di focus */
+    input:focus, textarea:focus, select:focus {
+        outline: 2px solid #667eea;
+        outline-offset: 2px;
+    }
+}
+
+/* Miglioramenti per accessibilità */
+@media (prefers-reduced-motion: reduce) {
+    /* Riduce le animazioni per utenti sensibili al movimento */
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    /* TODO: Implementare tema scuro */
+    /* Placeholder per futura implementazione tema scuro */
+}
+
+/* Safe area per dispositivi con notch */
+@supports (padding: max(0px)) {
+    .container {
+        padding-left: max(20px, env(safe-area-inset-left));
+        padding-right: max(20px, env(safe-area-inset-right));
+        padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+    
+    .header {
+        padding-top: max(0px, env(safe-area-inset-top));
+    }
+}
+
+/* Miglioramenti per PWA */
+@media (display-mode: standalone) {
+    /* Quando l'app è installata come PWA */
+    .header {
+        padding-top: 20px; /* Spazio extra per la status bar */
+    }
+    
+    body {
+        -webkit-user-select: none; /* Previene selezione accidentale */
+        user-select: none;
+    }
+    
+    input, textarea {
+        -webkit-user-select: text;
+        user-select: text;
+    }
+}
+
+/* Ottimizzazioni per performance su mobile */
+@media (max-width: 768px) {
+    /* Riduce la complessità visiva su mobile */
+    .meal-entry {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Shadow più leggero */
+    }
+    
+    .navigation, .add-meal-section, .diary-section {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Shadow più leggero */
+    }
+    
+    /* Ottimizza le transizioni */
+    .nav-btn, .meal-type-btn {
+        transition: background-color 0.2s, transform 0.1s;
+    }
+}
+
+/* Gestione overflow per contenuti lunghi */
+@media (max-width: 480px) {
+    .meal-food {
+        word-break: break-word;
+        hyphens: auto;
+    }
+    
+    .meal-notes {
+        word-break: break-word;
+        hyphens: auto;
+    }
+    
+    .archive-preview {
+        word-break: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+}

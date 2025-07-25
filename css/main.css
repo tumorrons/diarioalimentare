@@ -1,0 +1,539 @@
+/* ===== MAIN.CSS - STILI PRINCIPALI ===== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* ===== HEADER ===== */
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: white;
+}
+
+.header h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.header p {
+    opacity: 0.9;
+    font-size: 16px;
+}
+
+/* ===== NAVIGATION ===== */
+.navigation {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.nav-btn {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+    text-align: center;
+}
+
+.nav-btn.active {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.utility-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.archive-btn, .backup-btn, .print-btn {
+    padding: 12px;
+    border: none;
+    border-radius: 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: white;
+}
+
+.archive-btn {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+}
+
+.backup-btn {
+    background: linear-gradient(45deg, #00d2d3, #54a0ff);
+}
+
+.print-btn {
+    background: linear-gradient(45deg, #5f27cd, #341f97);
+}
+
+.archive-btn:hover, .backup-btn:hover, .print-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.current-date {
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #333;
+    font-size: 16px;
+}
+
+/* ===== ADD MEAL SECTION ===== */
+.add-meal-section {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.meal-type-selector {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.meal-type-btn {
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+    text-align: center;
+}
+
+.meal-type-btn.active {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.food-input-group {
+    margin-bottom: 20px;
+}
+
+.food-input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.food-input-group input, .food-input-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.food-input-group input:focus, .food-input-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* ===== PHOTO SECTION ===== */
+.photo-section {
+    margin-bottom: 20px;
+}
+
+.photo-inputs {
+    display: none;
+}
+
+.photo-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.photo-btn {
+    padding: 15px;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.photo-btn.before {
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+}
+
+.photo-btn.after {
+    background: linear-gradient(45deg, #ff9ff3, #f368e0);
+}
+
+.photo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.photo-previews {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.photo-preview {
+    text-align: center;
+}
+
+.photo-preview img {
+    max-width: 100%;
+    max-height: 120px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+.photo-preview-label {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+    font-weight: 600;
+}
+
+/* ===== BUTTONS ===== */
+.add-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.back-btn {
+    width: 100%;
+    padding: 12px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 20px;
+}
+
+.back-btn:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+/* ===== DIARY SECTION ===== */
+.diary-section {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.diary-section h2 {
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.meal-entry {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-left: 5px solid #667eea;
+}
+
+.meal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.meal-type-badge {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.meal-time {
+    color: #666;
+    font-size: 14px;
+}
+
+.meal-food {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.meal-notes {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.meal-photos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.meal-photo-container {
+    text-align: center;
+}
+
+.meal-photo {
+    width: 100%;
+    max-height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.meal-photo-label {
+    font-size: 11px;
+    color: #666;
+    margin-top: 3px;
+    font-weight: 600;
+}
+
+.delete-btn {
+    background: #ff4757;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s;
+    margin-left: 5px;
+}
+
+.delete-btn:hover {
+    background: #ff3742;
+    transform: scale(1.05);
+}
+
+.edit-btn {
+    background: #ffa502;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s;
+}
+
+.edit-btn:hover {
+    background: #ff9500;
+    transform: scale(1.05);
+}
+
+.meal-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.empty-state {
+    text-align: center;
+    color: #666;
+    padding: 40px 20px;
+}
+
+/* ===== VIEWS ===== */
+.archive-view, .day-detail-view {
+    display: none;
+}
+
+.archive-view.active, .day-detail-view.active {
+    display: block;
+}
+
+.archive-list {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.archive-day {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-left: 5px solid #667eea;
+}
+
+.archive-day:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.archive-day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.archive-date {
+    font-weight: 600;
+    color: #333;
+    font-size: 16px;
+}
+
+.meal-count {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.archive-preview {
+    color: #666;
+    font-size: 14px;
+}
+
+/* ===== BACKUP SECTION ===== */
+.backup-section {
+    display: none;
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.backup-section.active {
+    display: block;
+}
+
+.backup-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.backup-action-btn {
+    padding: 15px;
+    border: none;
+    border-radius: 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: white;
+}
+
+.download-btn {
+    background: linear-gradient(45deg, #00d2d3, #54a0ff);
+}
+
+.upload-btn {
+    background: linear-gradient(45deg, #ff9ff3, #f368e0);
+}
+
+.backup-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.file-input {
+    display: none;
+}
+
+/* ===== PRINT VIEW ===== */
+.print-view {
+    display: none;
+}
+
+.print-controls {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.month-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.month-input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 16px;
+}
