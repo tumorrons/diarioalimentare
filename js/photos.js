@@ -1,4 +1,4 @@
-// ===== PHOTOS.JS - GESTIONE FOTO (MOBILE FIX) =====
+// ===== PHOTOS.JS - GESTIONE FOTO (WEBVIEW ANDROID FIX) =====
 
 let currentPhotoBefore = null;
 let currentPhotoAfter = null;
@@ -10,6 +10,18 @@ const PHOTO_CONFIG = {
     quality: 0.7,
     maxFileSize: 3 * 1024 * 1024 // 3MB
 };
+
+// Detecta se siamo in una WebView Android
+function isAndroidWebView() {
+    const ua = navigator.userAgent;
+    return /Android/.test(ua) && /wv/.test(ua);
+}
+
+// Detecta se siamo in una app Android (anche senza wv flag)
+function isAndroidApp() {
+    const ua = navigator.userAgent;
+    return /Android/.test(ua) && !ua.includes('Chrome/') && !ua.includes('Firefox/');
+}
 
 function setupPhotoHandlers() {
     // Gestione foto prima
@@ -29,33 +41,155 @@ function setupPhotoHandlers() {
     }
     
     console.log('📸 Photo handlers configurati');
+    console.log('🤖 Android WebView:', isAndroidWebView());
+    console.log('📱 Android App:', isAndroidApp());
 }
 
-// Fix per mobile: funzione dedicata per attivare input foto
+// Fix specifico per WebView Android
 function triggerPhotoInput(type) {
     const inputId = type === 'before' ? 'photoBeforeInput' : 'photoAfterInput';
     const input = document.getElementById(inputId);
     
-    if (input) {
-        // Per mobile: crea un evento touch/click simulato
+    if (!input) {
+        console.error(`❌ Input foto ${type} non trovato`);
+        return;
+    }
+
+    console.log(`📱 Trigger foto ${type} - WebView: ${isAndroidWebView()}`);
+
+    // Per WebView Android, usa un approccio più diretto
+    if (isAndroidWebView() || isAndroidApp()) {
+        // Reset dell'input
+        input.value = '';
+        
+        // Configura l'input per WebView
+        input.style.position = 'fixed';
+        input.style.top = '0';
+        input.style.left = '0';
+        input.style.width = '100%';
+        input.style.height = '100%';
+        input.style.opacity = '0';
+        input.style.zIndex = '9999';
+        input.style.display = 'block';
+        input.style.pointerEvents = 'auto';
+        
+        // Focus prima del click (importante per WebView)
+        input.focus();
+        
+        // Attendi un frame prima del click
+        setTimeout(() => {
+            // Crea evento sintetico
+            const event = new Event('click', {
+                bubbles: true,
+                cancelable: true
+            });
+            
+            input.dispatchEvent(event);
+            
+            // Se il primo metodo non funziona, prova il click diretto
+            setTimeout(() => {
+                input.click();
+            }, 50);
+            
+            // Nascondi dopo il tentativo
+            setTimeout(() => {
+                input.style.display = 'none';
+                input.style.position = '';
+                input.style.zIndex = '';
+                input.style.opacity = '';
+                input.style.pointerEvents = '';
+            }, 200);
+        }, 100);
+        
+    } else {
+        // Per browser normali, usa il metodo standard
         input.style.display = 'block';
         input.style.position = 'absolute';
         input.style.left = '-9999px';
         input.style.opacity = '0';
         
-        // Focus e click per compatibilità mobile
         input.focus();
         input.click();
         
-        // Torna invisibile dopo il click
         setTimeout(() => {
             input.style.display = 'none';
         }, 100);
-        
-        console.log(`📱 Trigger foto ${type} per mobile`);
-    } else {
-        console.error(`❌ Input foto ${type} non trovato`);
     }
+    
+    console.log(`📷 Tentativo attivazione input ${type} completato`);
+}
+
+// Metodo alternativo per WebView molto restrittive
+function showPhotoInputOverlay(type) {
+    const overlay = document.createElement('div');
+    const inputId = type === 'before' ? 'photoBeforeInput' : 'photoAfterInput';
+    const input = document.getElementById(inputId);
+    
+    overlay.innerHTML = `
+        <div class="photo-overlay">
+            <div class="photo-overlay-content">
+                <h3>📷 Seleziona Foto</h3>
+                <p>Tocca il pulsante qui sotto per ${type === 'before' ? 'foto prima' : 'foto dopo'}</p>
+                <input type="file" accept="image/*" capture="environment" style="
+                    width: 100%; 
+                    height: 60px; 
+                    font-size: 16px; 
+                    padding: 10px;
+                    background: #667eea;
+                    color: white;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                ">
+                <button onclick="this.parentElement.parentElement.parentElement.remove()" style="
+                    margin-top: 15px; 
+                    padding: 10px 20px; 
+                    background: #6c757d; 
+                    color: white; 
+                    border: none; 
+                    border-radius: 8px; 
+                    cursor: pointer;
+                ">Annulla</button>
+            </div>
+        </div>
+    `;
+    
+    overlay.style.cssText = `
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        background: rgba(0,0,0,0.8); 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        z-index: 10000;
+        padding: 20px;
+    `;
+    
+    const content = overlay.querySelector('.photo-overlay-content');
+    content.style.cssText = `
+        background: white; 
+        padding: 30px; 
+        border-radius: 15px; 
+        text-align: center; 
+        max-width: 300px; 
+        width: 100%;
+    `;
+    
+    // Collega l'evento change al nuovo input
+    const newInput = overlay.querySelector('input[type="file"]');
+    newInput.addEventListener('change', function(e) {
+        if (e.target.files[0]) {
+            handlePhotoInput(e, type);
+            overlay.remove();
+        }
+    });
+    
+    document.body.appendChild(overlay);
+    
+    console.log(`📱 Mostrato overlay foto per ${type}`);
 }
 
 function handlePhotoInput(event, type) {
@@ -96,6 +230,11 @@ function handlePhotoInput(event, type) {
             }
             
             console.log(`✅ Foto ${type} elaborata e salvata`);
+            
+            // Mostra notifica specifica per WebView
+            if (isAndroidWebView()) {
+                showNotification(`📷 Foto ${type} aggiunta!`, 'success');
+            }
         });
     };
     
@@ -263,7 +402,7 @@ function getCurrentPhotoAfter() {
     return currentPhotoAfter;
 }
 
-function setCurrentPhoteBefore(photo) {
+function setCurrentPhotoBefore(photo) {
     currentPhotoBefore = photo;
 }
 
@@ -271,7 +410,57 @@ function setCurrentPhotoAfter(photo) {
     currentPhotoAfter = photo;
 }
 
-// Funzioni per la gestione batch delle foto
+// Funzione di debug per WebView
+function debugPhotoInputs() {
+    const beforeInput = document.getElementById('photoBeforeInput');
+    const afterInput = document.getElementById('photoAfterInput');
+    
+    console.log('🔍 Debug Photo Inputs:');
+    console.log('- Before input exists:', !!beforeInput);
+    console.log('- After input exists:', !!afterInput);
+    console.log('- Before input accept:', beforeInput?.accept);
+    console.log('- After input accept:', afterInput?.accept);
+    console.log('- User Agent:', navigator.userAgent);
+    console.log('- Is WebView:', isAndroidWebView());
+    console.log('- Is Android App:', isAndroidApp());
+    
+    // Test click su input
+    if (beforeInput) {
+        console.log('🧪 Test click input before...');
+        beforeInput.click();
+    }
+}
+
+// Fallback per WebView molto restrittive - mostra pulsante alternativo
+function addWebViewPhotoFallback() {
+    if (isAndroidWebView() || isAndroidApp()) {
+        const photoSection = document.querySelector('.photo-section');
+        if (photoSection && !document.getElementById('webview-photo-fallback')) {
+            const fallbackDiv = document.createElement('div');
+            fallbackDiv.id = 'webview-photo-fallback';
+            fallbackDiv.innerHTML = `
+                <div style="margin-top: 15px; padding: 15px; background: #fff3cd; border-radius: 10px; text-align: center;">
+                    <p style="margin: 0 0 10px 0; font-size: 14px; color: #856404;">
+                        <strong>📱 Modalità WebView Android</strong><br>
+                        Se i pulsanti foto non funzionano, usa questi:
+                    </p>
+                    <button onclick="showPhotoInputOverlay('before')" style="
+                        margin: 5px; padding: 8px 15px; background: #4CAF50; color: white; 
+                        border: none; border-radius: 8px; cursor: pointer;
+                    ">📷 Foto Prima (Alt)</button>
+                    <button onclick="showPhotoInputOverlay('after')" style="
+                        margin: 5px; padding: 8px 15px; background: #ff9ff3; color: white; 
+                        border: none; border-radius: 8px; cursor: pointer;
+                    ">📸 Foto Dopo (Alt)</button>
+                </div>
+            `;
+            photoSection.appendChild(fallbackDiv);
+            console.log('📱 Aggiunto fallback WebView per foto');
+        }
+    }
+}
+
+// Funzioni per la gestione batch delle foto (mantenute dall'originale)
 function compressAllMealPhotos() {
     return new Promise((resolve) => {
         let processed = 0;
